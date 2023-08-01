@@ -23,7 +23,7 @@ pub fn find(keyword: &str) {
     let mut table = Table::new();
     table.set_format(*format::consts::FORMAT_NO_BORDER_LINE_SEPARATOR);
     table.set_titles(row![
-        "Number", "Title", "Author", "Type", "Size", "ISBN", "source"
+        "Number", "Title", "Author", "Type", "Size", "ISBN", "Source"
     ]);
     for (i, book) in books.iter().enumerate() {
         table.add_row(row![
