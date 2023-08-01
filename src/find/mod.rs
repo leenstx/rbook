@@ -1,4 +1,3 @@
-use std::fmt::{Display, Pointer};
 use std::fs::File;
 use std::io::{Read, Write};
 
@@ -8,7 +7,6 @@ use reqwest::blocking::ClientBuilder;
 use crate::util;
 
 mod nameless;
-
 
 pub fn find(keyword: &str) {
     let books = nameless::find(keyword);
@@ -24,9 +22,19 @@ pub fn find(keyword: &str) {
     }
     let mut table = Table::new();
     table.set_format(*format::consts::FORMAT_NO_BORDER_LINE_SEPARATOR);
-    table.set_titles(row!["Number","Title", "Author", "Type", "Size", "ISBN", "source"]);
+    table.set_titles(row![
+        "Number", "Title", "Author", "Type", "Size", "ISBN", "source"
+    ]);
     for (i, book) in books.iter().enumerate() {
-        table.add_row(row![i+1,book.title, book.author, book.file_type, book.size, book.isbn, book.source]);
+        table.add_row(row![
+            i + 1,
+            book.title,
+            book.author,
+            book.file_type,
+            book.size,
+            book.isbn,
+            book.source
+        ]);
     }
     table.printstd();
     println!("Please input a number of the book that you want to download");
@@ -42,7 +50,8 @@ pub fn find(keyword: &str) {
     let mut response = cli.get(download).send().unwrap();
 
     if response.status().is_success() {
-        let mut file = File::create(format!("{}.{}", book.title, book.file_type)).expect("Failed to create file");
+        let mut file = File::create(format!("{}.{}", book.title, book.file_type))
+            .expect("Failed to create file");
 
         let mut buffer = [0; 1024 * 1024];
 
@@ -50,7 +59,8 @@ pub fn find(keyword: &str) {
             match response.read(&mut buffer) {
                 Ok(0) => break,
                 Ok(n) => {
-                    file.write_all(&buffer[..n]).expect("Failed to write to file");
+                    file.write_all(&buffer[..n])
+                        .expect("Failed to write to file");
                 }
                 Err(e) => {
                     println!("Error occurred while downloading file: {}", e);
@@ -60,10 +70,12 @@ pub fn find(keyword: &str) {
         }
         println!("File downloaded successfully!");
     } else {
-        println!("Failed to download file. Response status: {:?}", response.status());
+        println!(
+            "Failed to download file. Response status: {:?}",
+            response.status()
+        );
     }
 }
-
 
 #[derive(Default, Debug)]
 pub struct Book {

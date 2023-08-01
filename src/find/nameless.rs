@@ -28,7 +28,10 @@ impl Nameless {
     }
     fn get_query_url(&self) -> Url {
         let mut url = Url::parse(&self.search_url).unwrap();
-        url.set_query(Some(&format!("{}={}&{}={}&{}={}", "count", &self.count, "page", &self.page, "key", &self.key)));
+        url.set_query(Some(&format!(
+            "{}={}&{}={}&{}={}",
+            "count", &self.count, "page", &self.page, "key", &self.key
+        )));
         url
     }
 }
@@ -36,23 +39,30 @@ impl Nameless {
 pub fn find(keyword: &str) -> Result<Vec<Book>> {
     let nameless = Nameless::new(keyword);
 
-    Ok(ClientBuilder::default().build()?
-        .get(nameless.get_query_url()).send()?
+    Ok(ClientBuilder::default()
+        .build()?
+        .get(nameless.get_query_url())
+        .send()?
         .json::<SimpleSearchRes>()?
-        .books.into_iter()
+        .books
+        .into_iter()
         .filter(|b| !b.download_url.is_empty())
         .map(Into::<Book>::into)
         .map(|mut b| {
             b.download = format!("{}{}", nameless.download_url, b.download);
             b
-        }).collect())
+        })
+        .collect())
 }
 
 impl From<NamelessBook> for Book {
     fn from(value: NamelessBook) -> Self {
         Self {
             title: value.title,
-            author: value.author.as_ref().map_or("".to_string(), |a| a.to_string()),
+            author: value
+                .author
+                .as_ref()
+                .map_or("".to_string(), |a| a.to_string()),
             isbn: value.isbn,
             tag: "".to_string(),
             score: "".to_string(),

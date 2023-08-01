@@ -9,9 +9,7 @@ pub fn wait_user_input_a_number(min: Option<i32>, max: Option<i32>) -> i32 {
             .expect("Failed to read line");
 
         let number: i32 = match input.trim().parse() {
-            Ok(num) => {
-                num
-            }
+            Ok(num) => num,
             Err(_) => {
                 println!("Please input an number");
                 continue;
