@@ -1,8 +1,9 @@
 use std::fs::File;
 use std::io::{Read, Write};
 
+
 use prettytable::{format, row, Table};
-use reqwest::blocking::ClientBuilder;
+use reqwest::blocking::{ClientBuilder};
 
 use crate::util;
 

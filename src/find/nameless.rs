@@ -1,9 +1,9 @@
 use anyhow::Result;
-use reqwest::blocking::ClientBuilder;
 use reqwest::Url;
 use serde::{Deserialize, Serialize};
 
 use crate::find::Book;
+use crate::util;
 
 /// 无名图书
 ///
@@ -39,8 +39,7 @@ impl Nameless {
 pub fn find(keyword: &str) -> Result<Vec<Book>> {
     let nameless = Nameless::new(keyword);
 
-    Ok(ClientBuilder::default()
-        .build()?
+    Ok(util::http()
         .get(nameless.get_query_url())
         .send()?
         .json::<SimpleSearchRes>()?
